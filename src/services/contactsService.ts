@@ -16,8 +16,9 @@ const getAll = async (ownerId: string, req: Request) => {
   }
 
   if ("page" in query && "limit" in query) {
-    const skip = Number(query.page as string);
+    const page = Number(query.page as string);
     const limit = Number(query.limit as string);
+    const skip = (page - 1) * limit;
 
     return await Contact.find(
       { owner: ownerId },
