@@ -1,5 +1,4 @@
 import {
-  checkEmailInUsers,
   checkSubscription,
   authenticateUser,
   checkUserCredentials,
@@ -16,7 +15,6 @@ export {
   updateContactValidation,
   updateStatusContactValidation,
   userValidation,
-  checkEmailInUsers,
   checkUserCredentials,
   authenticateUser,
   checkSubscription,

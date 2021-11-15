@@ -1,8 +1,8 @@
-import { IContact } from ".";
+import { IContact, IUser } from ".";
 import { NextFunction } from "express";
 import { NotFound } from "http-errors";
 
-const hasError = (checkObject: IContact | Error) => {
+const hasError = (checkObject: IContact | IUser | Error) => {
   if (checkObject instanceof Error || !checkObject) {
     return true;
   }
@@ -11,7 +11,7 @@ const hasError = (checkObject: IContact | Error) => {
 };
 
 const responseWithError = async (
-  checkObject: IContact | Error,
+  checkObject: IContact | IUser | Error,
   next: NextFunction
 ) => {
   if (checkObject instanceof Error) {
@@ -19,7 +19,7 @@ const responseWithError = async (
   }
 
   if (!checkObject) {
-    next(new NotFound(`Contact not found`));
+    next(new NotFound(`Not found`));
   }
 };
 

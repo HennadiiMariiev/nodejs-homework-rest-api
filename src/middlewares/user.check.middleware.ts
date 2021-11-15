@@ -1,24 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { BadRequest, Conflict, Unauthorized, NotFound } from "http-errors";
+import { BadRequest, Unauthorized, NotFound } from "http-errors";
 import jwt from "jsonwebtoken";
 import { subscriptionType, authType } from "../helpers";
 import { User } from "../model";
 import { SECRET_KEY } from "../config";
-
-const checkEmailInUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-
-  if (user) {
-    return next(new Conflict("User with same email already exists."));
-  }
-
-  next();
-};
 
 const checkSubscription = async (
   req: Request,
@@ -55,7 +40,7 @@ const checkUserCredentials = async (
     next(new NotFound(`User with email "${email}" not found`));
   }
 
-  if (!user.comparePassword(password)) {
+  if (!user?.comparePassword(password)) {
     next(new Unauthorized(`Email or password is wrong`));
   }
 
@@ -98,9 +83,4 @@ const authenticateUser = async (
   next();
 };
 
-export {
-  checkEmailInUsers,
-  checkSubscription,
-  authenticateUser,
-  checkUserCredentials,
-};
+export { checkSubscription, authenticateUser, checkUserCredentials };

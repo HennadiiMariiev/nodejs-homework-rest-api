@@ -1,9 +1,20 @@
-import { Request, Response } from "express";
-import { IUser, subscriptionType } from "../helpers";
+import { NextFunction, Request, Response } from "express";
+import {
+  IUser,
+  subscriptionType,
+  hasError,
+  responseWithError,
+} from "../helpers";
 import { userService } from "../services";
 
-const signup = async (req: Request, res: Response) => {
-  const { email }: { email: string } = await userService.signup(req.body);
+const signup = async (req: Request, res: Response, next: NextFunction) => {
+  const user: IUser | Error = await userService.signup(req.body);
+
+  if (hasError(user)) {
+    return responseWithError(user, next);
+  }
+
+  const { email } = user as IUser;
 
   res.status(200).json({ message: "success", data: { email } });
 };

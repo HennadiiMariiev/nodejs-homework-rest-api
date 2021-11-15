@@ -1,17 +1,27 @@
 import jwt from "jsonwebtoken";
+import { BadRequest } from "http-errors";
 import { User } from "../model";
 import { IUser } from "../helpers";
 import { SECRET_KEY } from "../config";
+import { isDuplicateKeyError } from "../helpers";
 
 const signup = async (user: IUser) => {
-  const { email, password } = user;
+  try {
+    const { email, password } = user;
 
-  const newUser = new User({ email });
-  newUser.setPassword(password);
+    const newUser = new User({ email });
+    newUser.setPassword(password);
 
-  await newUser.save();
+    await newUser.save();
 
-  return newUser;
+    return newUser;
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return new BadRequest("User with same email already exists.");
+    }
+
+    return error;
+  }
 };
 
 const login = async (user: IUser) => {
