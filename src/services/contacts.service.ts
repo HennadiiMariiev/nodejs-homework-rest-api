@@ -18,13 +18,14 @@ const getAll = async (ownerId: string, req: Request) => {
   if ("page" in query && "limit" in query) {
     const page = Number(query.page as string);
     const limit = Number(query.limit as string);
-    const skip = (page - 1) * limit;
 
-    return await Contact.find(
-      { owner: ownerId },
-      "_id name email phone owner",
-      { skip, limit }
-    ).populate("owner", "email");
+    if (page > 0 && limit > 0) {
+      return await Contact.find(
+        { owner: ownerId },
+        "_id name email phone owner",
+        { skip: (page - 1) * limit, limit }
+      ).populate("owner", "email");
+    }
   }
 
   return await Contact.find({ owner: ownerId }).populate("owner", "email");
