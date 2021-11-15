@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { IContact } from "../helpers";
 import { contactService } from "../services";
-
-type UpdateBodyStrings = { owner: string; favorite: boolean };
+import { hasError, responseWithError } from "../helpers";
+import { updateBodyStrings } from "../helpers";
 
 const getContacts = async (req: Request, res: Response) => {
   const ownerId: string = req.body.owner;
@@ -11,52 +12,102 @@ const getContacts = async (req: Request, res: Response) => {
   res.status(200).json({ message: "success", data: { contacts } });
 };
 
-const getContactById = async (req: Request, res: Response) => {
-  const ownerId: string = req.body.owner;
-  const contactId: string = req.params.contactId;
+const getContactById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const ownerId: string = req.body.owner;
+    const contactId: string = req.params.contactId;
 
-  const contact = await contactService.getById(ownerId, contactId);
+    const contact: IContact | Error = await contactService.getById(
+      ownerId,
+      contactId
+    );
 
-  res.status(200).json({ message: "success", data: { contact } });
+    if (hasError(contact)) {
+      return responseWithError(contact, next);
+    }
+
+    res.status(200).json({ message: "success", data: { contact } });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const postContact = async (req: Request, res: Response) => {
-  const newContact = await contactService.post(req.body);
+const postContact = async (req: Request, res: Response, next: NextFunction) => {
+  const сontact: IContact | Error = await contactService.post(req.body);
 
-  res.status(201).json({ message: "Contact added", data: { newContact } });
+  if (hasError(сontact)) {
+    return responseWithError(сontact, next);
+  }
+
+  res.status(201).json({ message: "Contact added", data: { сontact } });
 };
 
-const updateContact = async (req: Request, res: Response) => {
+const updateContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const owner: string = req.body.owner;
   const contactId: string = req.params.contactId;
 
-  const newContact = await contactService.update(owner, contactId, {
-    ...req.body,
-  });
+  const сontact: IContact | Error = await contactService.update(
+    owner,
+    contactId,
+    {
+      ...req.body,
+    }
+  );
 
-  res.status(200).json({ message: "Contact updated", data: { newContact } });
+  if (hasError(сontact)) {
+    return responseWithError(сontact, next);
+  }
+
+  res.status(200).json({ message: "Contact updated", data: { сontact } });
 };
 
-const updateStatusContact = async (req: Request, res: Response) => {
-  const { owner, favorite }: UpdateBodyStrings = req.body;
+const updateStatusContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { owner, favorite }: updateBodyStrings = req.body;
   const contactId: string = req.params.contactId;
 
-  const updatedContact = await contactService.updateStatus(
+  const сontact: IContact | Error = await contactService.updateStatus(
     owner,
     contactId,
     favorite
   );
 
+  if (hasError(сontact)) {
+    return responseWithError(сontact, next);
+  }
+
   res
     .status(200)
-    .json({ message: `Contact's status updated`, data: { updatedContact } });
+    .json({ message: `Contact's status updated`, data: { сontact } });
 };
 
-const deleteContact = async (req: Request, res: Response) => {
+const deleteContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const owner: string = req.body.owner;
   const contactId: string = req.params.contactId;
 
-  const contact = await contactService.deleteById(owner, contactId);
+  const contact: IContact | Error = await contactService.deleteById(
+    owner,
+    contactId
+  );
+
+  if (hasError(contact)) {
+    return responseWithError(contact, next);
+  }
 
   res.status(200).json({ message: "Contact deleted", data: { contact } });
 };

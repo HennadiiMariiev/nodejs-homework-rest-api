@@ -10,8 +10,6 @@ import {
 import {
   addContactValidation,
   updateContactValidation,
-  checkFieldInContact,
-  checkIdInContact,
   updateStatusContactValidation,
   authenticateUser,
 } from "../../middlewares";
@@ -23,40 +21,31 @@ router.get("/", asyncWrapper([authenticateUser]), asyncWrapper([getContacts]));
 
 router.get(
   "/:contactId",
-  asyncWrapper([authenticateUser, checkIdInContact]),
+  asyncWrapper([authenticateUser]),
   asyncWrapper([getContactById])
 );
 
 router.delete(
   "/:contactId",
-  asyncWrapper([authenticateUser, checkIdInContact]),
+  asyncWrapper([authenticateUser]),
   asyncWrapper([deleteContact])
 );
 
 router.post(
   "/",
-  asyncWrapper([authenticateUser, addContactValidation, checkFieldInContact]),
+  asyncWrapper([authenticateUser, addContactValidation]),
   asyncWrapper([postContact])
 );
 
 router.put(
   "/:contactId",
-  asyncWrapper([
-    authenticateUser,
-    updateContactValidation,
-    checkIdInContact,
-    checkFieldInContact,
-  ]),
+  asyncWrapper([authenticateUser, updateContactValidation]),
   asyncWrapper([updateContact])
 );
 
 router.patch(
   "/:contactId/favorite",
-  asyncWrapper([
-    authenticateUser,
-    checkIdInContact,
-    updateStatusContactValidation,
-  ]),
+  asyncWrapper([authenticateUser, updateStatusContactValidation]),
   asyncWrapper([updateStatusContact])
 );
 

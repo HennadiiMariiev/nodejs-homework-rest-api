@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+import { callbackFunction } from ".";
 
-type CallbackFunction = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => void;
-
-const asyncWrapper = (callbacks: Array<CallbackFunction>) =>
+const asyncWrapper = (callbacks: Array<callbackFunction>) =>
   callbacks.map(
     (callback) => async (req: Request, res: Response, next: NextFunction) => {
       try {

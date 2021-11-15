@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { BadRequest, Conflict, Unauthorized, NotFound } from "http-errors";
 import jwt from "jsonwebtoken";
-import { subscriptionType } from "../helpers";
+import { subscriptionType, authType } from "../helpers";
 import { User } from "../model";
 import { SECRET_KEY } from "../config";
-
-type Auth = [bearer: string, token: string];
 
 const checkEmailInUsers = async (
   req: Request,
@@ -69,7 +67,9 @@ const authenticateUser = async (
   _: Response,
   next: NextFunction
 ) => {
-  const [bearer, token]: Auth = req.headers.authorization!.split(" ") as Auth;
+  const [bearer, token]: authType = req.headers.authorization!.split(
+    " "
+  ) as authType;
 
   if (bearer !== "Bearer") {
     next(new Unauthorized("Not authorized"));

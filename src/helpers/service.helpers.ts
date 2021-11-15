@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { Types } from "mongoose";
 
 const isFavoriteInRequest = (req: Request) => {
   if (
@@ -30,8 +31,22 @@ const getPageAndLimitFromRequest = (req: Request) => {
   return { page, limit };
 };
 
+const isValidId = (id: string) => Types.ObjectId.isValid(id);
+
+const isDuplicateKeyError = (error: unknown) => {
+  type errorType = { code: number };
+  const { code } = error as errorType;
+  if (code === 11000) {
+    return true;
+  }
+
+  return false;
+};
+
 export {
   isFavoriteInRequest,
   isValidPaginationInRequest,
   getPageAndLimitFromRequest,
+  isValidId,
+  isDuplicateKeyError,
 };
