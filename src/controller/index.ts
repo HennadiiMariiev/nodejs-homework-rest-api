@@ -5,9 +5,9 @@ import {
   updateContact,
   updateStatusContact,
   deleteContact,
-} from "./contactsController";
+} from "./contacts.controller";
 
-import { signup, login, logout, current, subscribe } from "./usersController";
+import { signup, login, logout, current, subscribe } from "./users.controller";
 
 export {
   getContacts,

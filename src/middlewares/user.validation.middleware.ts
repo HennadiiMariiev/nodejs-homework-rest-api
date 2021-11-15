@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { responseErrorOrNext, validateObject } from "../helpers";
-import { joiUserSchema } from "./../model";
+import { joiUserSchema } from "../model";
 
 const userValidation = async (
   req: Request,

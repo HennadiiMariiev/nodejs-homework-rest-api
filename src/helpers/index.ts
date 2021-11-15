@@ -2,12 +2,12 @@ import {
   isPhoneInContacts,
   isEmailInContacts,
   responseErrorOrNext,
-} from "./checkHelpers";
-import { validateObject, ID_LENGTH } from "./validationHelpers";
-import { asyncWrapper } from "./asyncWrapper";
+} from "./check.helper";
+import { validateObject, ID_LENGTH } from "./validation.helper";
+import { asyncWrapper } from "./wrapper";
 import { IContact, IError, IUser } from "./interfaces";
 import { subscriptionType } from "./types";
-import * as patterns from "./regexpPatterns";
+import * as patterns from "./patterns";
 
 export {
   isPhoneInContacts,

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { User } from "../model";
 import { IUser } from "../helpers";
-import { SECRET_KEY } from "./../config";
+import { SECRET_KEY } from "../config";
 
 const signup = async (user: IUser) => {
   const { email, password } = user;

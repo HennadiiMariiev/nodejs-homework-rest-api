@@ -24,19 +24,16 @@ const getAll = async (ownerId: string, req: Request) => {
       { owner: ownerId },
       "_id name email phone owner",
       { skip, limit }
-    ).populate("owner", "email subscription");
+    ).populate("owner", "email");
   }
 
-  return await Contact.find({ owner: ownerId }).populate(
-    "owner",
-    "email subscription"
-  );
+  return await Contact.find({ owner: ownerId }).populate("owner", "email");
 };
 
 const getById = async (ownerId: string, contactId: string) =>
   await Contact.findById({ owner: ownerId, _id: contactId }).populate(
     "owner",
-    "email subscription"
+    "email"
   );
 
 const post = async (contact: IContact) => {

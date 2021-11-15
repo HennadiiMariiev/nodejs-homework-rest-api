@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { BadRequest, Conflict, Unauthorized, NotFound } from "http-errors";
 import jwt from "jsonwebtoken";
 import { subscriptionType } from "../helpers";
-import { User } from "./../model";
-import { SECRET_KEY } from "./../config";
+import { User } from "../model";
+import { SECRET_KEY } from "../config";
 
 type Auth = [bearer: string, token: string];
 
