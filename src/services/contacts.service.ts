@@ -2,40 +2,36 @@ import { Request } from "express";
 import { Contact } from "../model";
 import { IContact } from "../helpers";
 
-const getAll = async (ownerId: string, req: Request) => {
-  const query = req.query;
+import {
+  isFavoriteInRequest,
+  isValidPaginationInRequest,
+  getPageAndLimitFromRequest,
+} from "../helpers";
 
-  if (
-    "favorite" in query &&
-    (query.favorite === "true" || query.favorite === "false")
-  ) {
+const getAll = async (owner: string, req: Request) => {
+  if (isFavoriteInRequest(req)) {
+    const { favorite } = req.query;
+
     return await Contact.find({
-      owner: ownerId,
-      favorite: query.favorite,
+      owner,
+      favorite,
     }).populate("owner", "email");
   }
 
-  if ("page" in query && "limit" in query) {
-    const page = Number(query.page as string);
-    const limit = Number(query.limit as string);
+  if (isValidPaginationInRequest(req)) {
+    const { page, limit } = getPageAndLimitFromRequest(req);
 
-    if (page > 0 && limit > 0) {
-      return await Contact.find(
-        { owner: ownerId },
-        "_id name email phone owner",
-        { skip: (page - 1) * limit, limit }
-      ).populate("owner", "email");
-    }
+    return await Contact.find({ owner }, "_id name email phone owner", {
+      skip: (page - 1) * limit,
+      limit,
+    }).populate("owner", "email");
   }
 
-  return await Contact.find({ owner: ownerId }).populate("owner", "email");
+  return await Contact.find({ owner }).populate("owner", "email");
 };
 
-const getById = async (ownerId: string, contactId: string) =>
-  await Contact.findById({ owner: ownerId, _id: contactId }).populate(
-    "owner",
-    "email"
-  );
+const getById = async (owner: string, _id: string) =>
+  await Contact.findById({ owner, _id }).populate("owner", "email");
 
 const post = async (contact: IContact) => {
   const newContact = await new Contact(contact);
@@ -45,13 +41,9 @@ const post = async (contact: IContact) => {
   return newContact;
 };
 
-const update = async (
-  ownerId: string,
-  contactId: string,
-  contact: IContact
-) => {
+const update = async (owner: string, _id: string, contact: IContact) => {
   const newContact = await Contact.findOneAndUpdate(
-    { owner: ownerId, _id: contactId },
+    { owner, _id },
     {
       $set: contact,
     },
@@ -61,13 +53,9 @@ const update = async (
   return newContact;
 };
 
-const updateStatus = async (
-  ownerId: string,
-  contactId: string,
-  favorite: boolean
-) => {
+const updateStatus = async (owner: string, _id: string, favorite: boolean) => {
   const updatedContact = await Contact.findOneAndUpdate(
-    { owner: ownerId, _id: contactId },
+    { owner, _id },
     { favorite },
     { new: true }
   );
@@ -75,10 +63,10 @@ const updateStatus = async (
   return updatedContact;
 };
 
-const deleteById = async (ownerId: string, contactId: string) => {
+const deleteById = async (owner: string, _id: string) => {
   const contact = await Contact.findOneAndRemove({
-    owner: ownerId,
-    _id: contactId,
+    owner,
+    _id,
   });
 
   return contact;
