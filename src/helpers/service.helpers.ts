@@ -1,17 +1,14 @@
 import { Request } from "express";
 import { Types } from "mongoose";
 
-const isFavoriteInRequest = (req: Request) => {
-  if (
+const isFavoriteInRequest = (req: Request): boolean => {
+  return (
     "favorite" in req.query &&
-    (req.query.favorite === "true" || req.query.favorite === "false")
-  ) {
-    return true;
-  }
-  return false;
+    ["true", "false"].includes(req.query.favorite as string)
+  );
 };
 
-const isValidPaginationInRequest = (req: Request) => {
+const isValidPaginationInRequest = (req: Request): boolean => {
   if ("page" in req.query && "limit" in req.query) {
     const page = Number(req.query.page as string);
     const limit = Number(req.query.limit as string);
@@ -20,27 +17,24 @@ const isValidPaginationInRequest = (req: Request) => {
       return true;
     }
   }
-
   return false;
 };
 
-const getPageAndLimitFromRequest = (req: Request) => {
+const getPageAndLimitFromRequest = (
+  req: Request
+): { page: number; limit: number } => {
   const page = Number(req.query.page as string);
   const limit = Number(req.query.limit as string);
 
   return { page, limit };
 };
 
-const isValidId = (id: string) => Types.ObjectId.isValid(id);
+const isValidId = (id: string): boolean => Types.ObjectId.isValid(id);
 
-const isDuplicateKeyError = (error: unknown) => {
+const isDuplicateKeyError = (error: unknown): boolean => {
   type errorType = { code: number };
   const { code } = error as errorType;
-  if (code === 11000) {
-    return true;
-  }
-
-  return false;
+  return code === 11000;
 };
 
 export {

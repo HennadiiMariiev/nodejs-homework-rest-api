@@ -2,23 +2,19 @@ import { IContact, IUser } from ".";
 import { NextFunction } from "express";
 import { NotFound } from "http-errors";
 
-const hasError = (checkObject: IContact | IUser | Error) => {
-  if (checkObject instanceof Error || !checkObject) {
-    return true;
-  }
-
-  return false;
+const hasError = (obj: IContact | IUser | Error): boolean => {
+  return obj instanceof Error;
 };
 
 const responseWithError = async (
-  checkObject: IContact | IUser | Error,
+  obj: IContact | IUser | Error,
   next: NextFunction
 ) => {
-  if (checkObject instanceof Error) {
-    next(checkObject);
+  if (obj instanceof Error) {
+    next(obj);
   }
 
-  if (!checkObject) {
+  if (!obj) {
     next(new NotFound(`Not found`));
   }
 };

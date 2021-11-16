@@ -3,6 +3,4 @@ const phone =
 
 const name = /^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Z][a-z]+)*)$/;
 
-const password = /^[A-Z]{1}[0-9]{}/;
-
-export { phone, name, password };
+export { phone, name };
