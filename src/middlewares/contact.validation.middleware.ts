@@ -1,7 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { BadRequest } from "http-errors";
-import { responseErrorOrNext, validateObject } from "../helpers";
+import { responseErrorOrNext, validateObject, isValidId } from "../helpers";
 import { joiContactSchema } from "../model";
+
+const contactIdValidation = async (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
+  const contactId: string = req.params.contactId;
+
+  !isValidId(contactId)
+    ? next(new BadRequest("Requested Id is not valid"))
+    : next();
+};
 
 const addContactValidation = async (
   req: Request,
@@ -43,4 +55,5 @@ export {
   addContactValidation,
   updateContactValidation,
   updateStatusContactValidation,
+  contactIdValidation,
 };

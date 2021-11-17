@@ -16,11 +16,9 @@ const signup = async (user: IUser) => {
 
     return newUser;
   } catch (error) {
-    if (isDuplicateKeyError(error)) {
-      return new BadRequest("User with same email already exists.");
-    }
-
-    return error;
+    return isDuplicateKeyError(error)
+      ? new BadRequest("User with same email already exists.")
+      : error;
   }
 };
 

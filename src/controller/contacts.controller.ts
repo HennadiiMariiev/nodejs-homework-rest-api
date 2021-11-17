@@ -5,9 +5,9 @@ import { hasError, responseWithError } from "../helpers";
 import { updateBodyStrings } from "../helpers";
 
 const getContacts = async (req: Request, res: Response) => {
-  const ownerId: string = req.body.owner;
+  const { owner } = req.body as { owner: string };
 
-  const contacts = await contactService.getAll(ownerId, req);
+  const contacts = await contactService.getAll(owner, req);
 
   res.status(200).json({ message: "success", data: { contacts } });
 };
@@ -18,11 +18,11 @@ const getContactById = async (
   next: NextFunction
 ) => {
   try {
-    const ownerId: string = req.body.owner;
-    const contactId: string = req.params.contactId;
+    const { owner } = req.body as { owner: string };
+    const { contactId } = req.params as { contactId: string };
 
     const contact: IContact | Error = await contactService.getById(
-      ownerId,
+      owner,
       contactId
     );
 
@@ -51,8 +51,8 @@ const updateContact = async (
   res: Response,
   next: NextFunction
 ) => {
-  const owner: string = req.body.owner;
-  const contactId: string = req.params.contactId;
+  const { owner } = req.body as { owner: string };
+  const { contactId } = req.params as { contactId: string };
 
   const сontact: IContact | Error = await contactService.update(
     owner,
@@ -75,7 +75,7 @@ const updateStatusContact = async (
   next: NextFunction
 ) => {
   const { owner, favorite }: updateBodyStrings = req.body;
-  const contactId: string = req.params.contactId;
+  const { contactId } = req.params as { contactId: string };
 
   const сontact: IContact | Error = await contactService.updateStatus(
     owner,
@@ -97,8 +97,8 @@ const deleteContact = async (
   res: Response,
   next: NextFunction
 ) => {
-  const owner: string = req.body.owner;
-  const contactId: string = req.params.contactId;
+  const { owner } = req.body as { owner: string };
+  const { contactId } = req.params as { contactId: string };
 
   const contact: IContact | Error = await contactService.deleteById(
     owner,

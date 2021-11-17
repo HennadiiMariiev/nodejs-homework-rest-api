@@ -1,7 +1,8 @@
 import joi, { ValidationResult } from "joi";
+import { Types } from "mongoose";
 import { IContact, IUser } from ".";
 
-const ID_LENGTH = 24;
+const isValidId = (id: string): boolean => Types.ObjectId.isValid(id);
 
 const validateObject = (
   contact: IContact | IUser,
@@ -15,4 +16,4 @@ const validateObject = (
   return objectSchema.validate(contact);
 };
 
-export { validateObject, ID_LENGTH };
+export { validateObject, isValidId };

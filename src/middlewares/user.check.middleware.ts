@@ -40,11 +40,9 @@ const checkUserCredentials = async (
     next(new NotFound(`User with email "${email}" not found`));
   }
 
-  if (!user?.comparePassword(password)) {
-    next(new Unauthorized(`Email or password is wrong`));
-  }
-
-  next();
+  !user?.comparePassword(password)
+    ? next(new Unauthorized(`Email or password is wrong`))
+    : next();
 };
 
 const authenticateUser = async (
@@ -52,9 +50,8 @@ const authenticateUser = async (
   _: Response,
   next: NextFunction
 ) => {
-  const [bearer, token]: authType = req.headers.authorization!.split(
-    " "
-  ) as authType;
+  const { authorization } = req.headers as { authorization: string };
+  const [bearer, token]: authType = authorization.split(" ") as authType;
 
   if (bearer !== "Bearer") {
     next(new Unauthorized("Not authorized"));

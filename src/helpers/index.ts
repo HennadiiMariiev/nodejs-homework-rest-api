@@ -1,10 +1,9 @@
 import { responseErrorOrNext } from "./check.helpers";
-import { validateObject, ID_LENGTH } from "./validation.helpers";
+import { validateObject, isValidId } from "./validation.helpers";
 import {
   isFavoriteInRequest,
   isValidPaginationInRequest,
   getPageAndLimitFromRequest,
-  isValidId,
   isDuplicateKeyError,
 } from "./service.helpers";
 import { hasError, responseWithError } from "./controller.helpers";
@@ -36,6 +35,5 @@ export {
   callbackFunction,
   updateBodyStrings,
   authType,
-  ID_LENGTH,
   patterns,
 };

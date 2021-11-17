@@ -13,9 +13,7 @@ const isValidPaginationInRequest = (req: Request): boolean => {
     const page = Number(req.query.page as string);
     const limit = Number(req.query.limit as string);
 
-    if (page > 0 && limit > 0) {
-      return true;
-    }
+    return page > 0 && limit > 0;
   }
   return false;
 };

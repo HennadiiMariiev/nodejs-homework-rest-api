@@ -7,6 +7,7 @@ import {
   addContactValidation,
   updateContactValidation,
   updateStatusContactValidation,
+  contactIdValidation,
 } from "./contact.validation.middleware";
 import { userValidation } from "./user.validation.middleware";
 
@@ -14,6 +15,7 @@ export {
   addContactValidation,
   updateContactValidation,
   updateStatusContactValidation,
+  contactIdValidation,
   userValidation,
   checkUserCredentials,
   authenticateUser,
