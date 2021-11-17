@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { IContact } from "../helpers";
+import {
+  IContact,
+  hasErrorOrNull,
+  responseWithError,
+  updateBodyStrings,
+} from "../helpers";
 import { contactService } from "../services";
-import { hasErrorOrNull, responseWithError } from "../helpers";
-import { updateBodyStrings } from "../helpers";
 
 const getContacts = async (req: Request, res: Response) => {
   const { owner } = req.body as { owner: string };

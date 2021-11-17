@@ -1,6 +1,6 @@
-import { IContact, IUser } from ".";
 import { NextFunction } from "express";
 import { NotFound } from "http-errors";
+import { IContact, IUser } from ".";
 
 const hasErrorOrNull = (obj: IContact | IUser | Error): boolean => {
   return obj instanceof Error || !obj;

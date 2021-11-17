@@ -1,9 +1,8 @@
 import jwt from "jsonwebtoken";
 import { BadRequest } from "http-errors";
 import { User } from "../model";
-import { IUser } from "../helpers";
+import { IUser, isDuplicateKeyError } from "../helpers";
 import { SECRET_KEY } from "../config";
-import { isDuplicateKeyError } from "../helpers";
 
 const signup = async (user: IUser) => {
   try {
