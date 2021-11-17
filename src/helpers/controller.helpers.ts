@@ -3,7 +3,7 @@ import { NextFunction } from "express";
 import { NotFound } from "http-errors";
 
 const hasError = (obj: IContact | IUser | Error): boolean => {
-  return obj instanceof Error;
+  return obj instanceof Error || !obj;
 };
 
 const responseWithError = async (

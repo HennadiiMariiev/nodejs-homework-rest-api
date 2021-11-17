@@ -47,7 +47,7 @@ const getAll = async (owner: string, req: Request) => {
 
 const getById = async (owner: string, _id: string) => {
   try {
-    return await Contact.findById({ owner, _id }).populate("owner", "email");
+    return await Contact.findOne({ owner, _id }).populate("owner", "email");
   } catch (error) {
     return error;
   }
