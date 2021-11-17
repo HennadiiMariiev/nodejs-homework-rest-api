@@ -2,7 +2,7 @@ import { IContact, IUser } from ".";
 import { NextFunction } from "express";
 import { NotFound } from "http-errors";
 
-const hasError = (obj: IContact | IUser | Error): boolean => {
+const hasErrorOrNull = (obj: IContact | IUser | Error): boolean => {
   return obj instanceof Error || !obj;
 };
 
@@ -19,4 +19,4 @@ const responseWithError = async (
   }
 };
 
-export { hasError, responseWithError };
+export { hasErrorOrNull, responseWithError };

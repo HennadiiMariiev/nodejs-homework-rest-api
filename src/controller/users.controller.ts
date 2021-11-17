@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   IUser,
   subscriptionType,
-  hasError,
+  hasErrorOrNull,
   responseWithError,
 } from "../helpers";
 import { userService } from "../services";
@@ -10,7 +10,7 @@ import { userService } from "../services";
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const user: IUser | Error = await userService.signup(req.body);
 
-  if (hasError(user)) {
+  if (hasErrorOrNull(user)) {
     return responseWithError(user, next);
   }
 
