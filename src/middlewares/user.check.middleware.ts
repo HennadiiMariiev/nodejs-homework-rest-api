@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { BadRequest, Unauthorized, NotFound } from "http-errors";
 import jwt from "jsonwebtoken";
-import { subscriptionType, authType } from "../helpers";
+import { subscriptionType, authType, IUser } from "../helpers";
 import { User } from "../model";
 import { SECRET_KEY } from "../config";
 
@@ -50,19 +50,19 @@ const authenticateUser = async (
   _: Response,
   next: NextFunction
 ) => {
-  const { authorization } = req.headers as { authorization: string };
-  const [bearer, token]: authType = authorization.split(" ") as authType;
-
-  if (bearer !== "Bearer") {
-    next(new Unauthorized("Not authorized"));
-  }
-
   try {
+    const { authorization } = req.headers as { authorization: string };
+    const [bearer, token]: authType = authorization.split(" ") as authType;
+
+    if (bearer !== "Bearer") {
+      next(new Unauthorized("Not authorized"));
+    }
+
     const id = jwt.verify(token, SECRET_KEY);
 
-    const user = await User.findById(id);
+    const user: IUser = await User.findById(id);
 
-    if (!user) {
+    if (!user || !user.token) {
       next(new Unauthorized("Not authorized"));
     }
 

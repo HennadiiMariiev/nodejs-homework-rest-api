@@ -13,6 +13,7 @@ export interface IUser {
   email: string;
   password: string;
   subscription: string;
+  token: string;
 }
 
 export interface IError {
