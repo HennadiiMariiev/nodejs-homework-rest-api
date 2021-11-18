@@ -2,8 +2,8 @@ import { NextFunction } from "express";
 import { NotFound } from "http-errors";
 import { IContact, IUser } from ".";
 
-const hasErrorOrNull = (obj: IContact | IUser | Error): boolean => {
-  return obj instanceof Error || !obj;
+const isErrorOrNull = (obj: IContact | IUser | Error): boolean => {
+  return obj instanceof Error || obj === null;
 };
 
 const responseWithError = async (
@@ -19,4 +19,4 @@ const responseWithError = async (
   }
 };
 
-export { hasErrorOrNull, responseWithError };
+export { isErrorOrNull, responseWithError };

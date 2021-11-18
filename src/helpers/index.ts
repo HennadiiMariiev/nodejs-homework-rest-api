@@ -6,7 +6,7 @@ import {
   getPageAndLimitFromRequest,
   isDuplicateKeyError,
 } from "./service.helpers";
-import { hasErrorOrNull, responseWithError } from "./controller.helpers";
+import { isErrorOrNull, responseWithError } from "./controller.helpers";
 import { asyncWrapper } from "./wrapper";
 import { IContact, IError, IUser } from "./interfaces";
 import {
@@ -25,7 +25,7 @@ export {
   isValidPaginationInRequest,
   getPageAndLimitFromRequest,
   isValidId,
-  hasErrorOrNull,
+  isErrorOrNull,
   responseWithError,
   isDuplicateKeyError,
   IError,

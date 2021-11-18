@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   IContact,
-  hasErrorOrNull,
+  isErrorOrNull,
   responseWithError,
   updateBodyStrings,
 } from "../helpers";
@@ -29,7 +29,7 @@ const getContactById = async (
       contactId
     );
 
-    if (hasErrorOrNull(contact)) {
+    if (isErrorOrNull(contact)) {
       return responseWithError(contact, next);
     }
 
@@ -42,7 +42,7 @@ const getContactById = async (
 const postContact = async (req: Request, res: Response, next: NextFunction) => {
   const сontact: IContact | Error = await contactService.post(req.body);
 
-  if (hasErrorOrNull(сontact)) {
+  if (isErrorOrNull(сontact)) {
     return responseWithError(сontact, next);
   }
 
@@ -65,7 +65,7 @@ const updateContact = async (
     }
   );
 
-  if (hasErrorOrNull(сontact)) {
+  if (isErrorOrNull(сontact)) {
     return responseWithError(сontact, next);
   }
 
@@ -86,7 +86,7 @@ const updateStatusContact = async (
     favorite
   );
 
-  if (hasErrorOrNull(сontact)) {
+  if (isErrorOrNull(сontact)) {
     return responseWithError(сontact, next);
   }
 
@@ -108,7 +108,7 @@ const deleteContact = async (
     contactId
   );
 
-  if (hasErrorOrNull(contact)) {
+  if (isErrorOrNull(contact)) {
     return responseWithError(contact, next);
   }
 
