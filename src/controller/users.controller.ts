@@ -63,4 +63,21 @@ const subscribe = async (req: Request, res: Response) => {
   });
 };
 
-export { signup, login, logout, current, subscribe };
+const changeAvatar = async (req: Request, res: Response) => {
+  const {
+    user,
+    subscription: subscriptionStr,
+  }: { user: IUser; subscription: subscriptionType } = req.body;
+
+  const { email, subscription } = await userService.changeAvatar(
+    user,
+    subscriptionStr
+  );
+
+  res.status(200).json({
+    message: "User subscription updated",
+    data: { user: { email, subscription } },
+  });
+};
+
+export { signup, login, logout, current, subscribe, changeAvatar };
