@@ -10,48 +10,52 @@ import {
 import {
   addContactValidation,
   updateContactValidation,
-  checkFieldInContact,
-  checkIdInContact,
   updateStatusContactValidation,
+  authenticateUser,
+  contactIdValidation,
 } from "../../middlewares";
 import { asyncWrapper } from "../../helpers";
 
 const router = express.Router();
 
-router.get("/", [getContacts]);
+router.get("/", asyncWrapper([authenticateUser]), asyncWrapper([getContacts]));
 
 router.get(
   "/:contactId",
-  asyncWrapper([checkIdInContact]),
+  asyncWrapper([authenticateUser, contactIdValidation]),
   asyncWrapper([getContactById])
 );
 
 router.delete(
   "/:contactId",
-  asyncWrapper([checkIdInContact]),
+  asyncWrapper([authenticateUser, contactIdValidation]),
   asyncWrapper([deleteContact])
 );
 
 router.post(
   "/",
-  asyncWrapper([addContactValidation, checkFieldInContact]),
+  asyncWrapper([authenticateUser, addContactValidation]),
   asyncWrapper([postContact])
 );
 
 router.put(
   "/:contactId",
   asyncWrapper([
+    authenticateUser,
+    contactIdValidation,
     updateContactValidation,
-    checkIdInContact,
-    checkFieldInContact,
   ]),
   asyncWrapper([updateContact])
 );
 
 router.patch(
   "/:contactId/favorite",
-  asyncWrapper([checkIdInContact, updateStatusContactValidation]),
+  asyncWrapper([
+    authenticateUser,
+    contactIdValidation,
+    updateStatusContactValidation,
+  ]),
   asyncWrapper([updateStatusContact])
 );
 
-export = router;
+export { router };

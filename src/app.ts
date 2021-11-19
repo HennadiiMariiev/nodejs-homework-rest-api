@@ -3,7 +3,7 @@ import logger from "morgan";
 import cors from "cors";
 import { IError } from "./helpers";
 
-import { router as contactsRouter } from "./routes/api";
+import { contactRouter, userRouter } from "./routes/api";
 
 const app: Application = express();
 
@@ -13,15 +13,16 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/contacts", contactsRouter);
+app.use("/api/contacts", contactRouter);
+app.use("/api/users", userRouter);
 
-app.use((_, res) => {
+app.use((_, res: Response) => {
   res.status(404).json({ message: "Not found" });
 });
 
-app.use((err: IError, _: Request, res: Response) => {
-  const { status = 500, message = "Internal server error" } = err;
-  res.status(status).json({ message });
+app.use((err: IError, _: Request, res: Response, next: NextFunction) => {
+  const { status: code = 500, message = "Internal server error" } = err;
+  res.status(code).json({ message, status: "error", code });
 });
 
 export = app;

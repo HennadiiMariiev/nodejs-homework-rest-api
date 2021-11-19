@@ -1,6 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { BadRequest } from "http-errors";
-import { responseErrorOrNext, validateContact } from "../helpers";
+import { responseErrorOrNext, validateObject, isValidId } from "../helpers";
+import { joiContactSchema } from "../model";
+
+const contactIdValidation = async (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
+  const contactId: string = req.params.contactId;
+
+  !isValidId(contactId)
+    ? next(new BadRequest("Requested Id is not valid"))
+    : next();
+};
 
 const addContactValidation = async (
   req: Request,
@@ -9,7 +22,7 @@ const addContactValidation = async (
 ) => {
   const requiredFields = ["name", "email", "phone"];
 
-  const { error } = validateContact(req.body, requiredFields);
+  const { error } = validateObject(req.body, joiContactSchema, requiredFields);
 
   responseErrorOrNext(error, res, next);
 };
@@ -19,7 +32,7 @@ const updateContactValidation = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { error } = validateContact(req.body);
+  const { error } = validateObject(req.body, joiContactSchema);
 
   if (Object.keys(req.body).length === 0) {
     next(new BadRequest("Empty request's body"));
@@ -33,7 +46,7 @@ const updateStatusContactValidation = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { error } = validateContact(req.body, ["favorite"]);
+  const { error } = validateObject(req.body, joiContactSchema, ["favorite"]);
 
   responseErrorOrNext(error, res, next);
 };
@@ -42,4 +55,5 @@ export {
   addContactValidation,
   updateContactValidation,
   updateStatusContactValidation,
+  contactIdValidation,
 };

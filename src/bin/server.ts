@@ -1,13 +1,11 @@
 import app from "../app";
 import { connectMongo } from "../model";
-import { PORT } from "../config/constants";
+import { PORT } from "../config/config";
 import { IError } from "../helpers";
 
 const start = async () => {
   try {
     await connectMongo();
-
-    console.log("Database connection successful.");
 
     app.listen(PORT, () => {
       console.log(`Server is running on port: ${PORT}`);

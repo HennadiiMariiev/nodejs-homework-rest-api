@@ -1,4 +1,13 @@
-import {contactSchema, Contact} from './contactSchema';
-import connectMongo from './connection';
+import { contactSchema, joiContactSchema, Contact } from "./contact";
+import { userSchema, joiUserSchema, User } from "./user";
+import connectMongo from "./connection";
 
-export {contactSchema, Contact, connectMongo};
+export {
+  contactSchema,
+  joiContactSchema,
+  Contact,
+  joiUserSchema,
+  userSchema,
+  User,
+  connectMongo,
+};
