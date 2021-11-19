@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { BadRequest } from "http-errors";
+import gravatar from "gravatar";
 import { User } from "../model";
 import { IUser, isDuplicateKeyError } from "../helpers";
 import { SECRET_KEY } from "../config";
@@ -7,8 +8,9 @@ import { SECRET_KEY } from "../config";
 const signup = async (user: IUser) => {
   try {
     const { email, password } = user;
+    const avatarURL = gravatar.url(email);
 
-    const newUser = new User({ email });
+    const newUser = new User({ email, avatarURL });
     newUser.setPassword(password);
 
     await newUser.save();
@@ -55,4 +57,17 @@ const subscribe = async (user: IUser, subscription: string) => {
   return updatedUser;
 };
 
-export { signup, login, logout, current, subscribe };
+//TODO: logic for avatar change
+const changeAvatar = async (user: IUser, subscription: string) => {
+  const updatedUser: IUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      subscription,
+    },
+    { new: true }
+  );
+
+  return updatedUser;
+};
+
+export { signup, login, logout, current, subscribe, changeAvatar };
