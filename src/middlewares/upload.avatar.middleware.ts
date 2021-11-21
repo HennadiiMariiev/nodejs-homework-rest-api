@@ -1,6 +1,5 @@
 import multer from "multer";
 import Jimp from "jimp";
-import { Request, Response, NextFunction } from "express";
 import { MAX_AVATAR_SIZE, TEMP_FOLDER_PATH } from "../config";
 
 const Jimp_TYPES = [
@@ -23,6 +22,10 @@ const uploadConfig = multer.diskStorage({
 
 const uploadMiddleware = multer({
   storage: uploadConfig,
+  limits: {
+    files: 1,
+    fileSize: MAX_AVATAR_SIZE,
+  },
   fileFilter: (_, file, cb) => {
     if (!Jimp_TYPES.includes(file.mimetype)) {
       cb({ message: "Bad mimetype", status: 400 } as unknown as Error);
@@ -32,25 +35,4 @@ const uploadMiddleware = multer({
   },
 });
 
-const fileSizeMiddleWare = async (
-  req: Request,
-  _: Response,
-  next: NextFunction
-) => {
-  try {
-    const file = req.file as Express.Multer.File;
-
-    if (file.size > MAX_AVATAR_SIZE) {
-      next({
-        message: `File size is > ${MAX_AVATAR_SIZE} bytes`,
-        status: 400,
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-
-  next();
-};
-
-export { uploadMiddleware, fileSizeMiddleWare };
+export { uploadMiddleware };

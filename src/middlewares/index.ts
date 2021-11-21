@@ -10,10 +10,7 @@ import {
   contactIdValidation,
 } from "./contact.validation.middleware";
 import { userValidation } from "./user.validation.middleware";
-import {
-  uploadMiddleware,
-  fileSizeMiddleWare,
-} from "./upload.avatar.middleware";
+import { uploadMiddleware } from "./upload.avatar.middleware";
 
 export {
   addContactValidation,
@@ -25,5 +22,4 @@ export {
   authenticateUser,
   checkSubscription,
   uploadMiddleware,
-  fileSizeMiddleWare,
 };
