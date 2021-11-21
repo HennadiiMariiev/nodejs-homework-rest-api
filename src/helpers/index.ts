@@ -8,7 +8,7 @@ import {
 } from "./service.helpers";
 import { isErrorOrNull, responseWithError } from "./controller.helpers";
 import { asyncWrapper } from "./wrapper";
-import { IContact, IError, IUser } from "./interfaces";
+import { IContact, IError, IUser, IAvatar } from "./interfaces";
 import {
   subscriptionType,
   callbackFunction,
@@ -36,4 +36,5 @@ export {
   updateBodyStrings,
   authType,
   patterns,
+  IAvatar,
 };

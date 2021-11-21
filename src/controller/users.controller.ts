@@ -63,20 +63,25 @@ const subscribe = async (req: Request, res: Response) => {
   });
 };
 
-const changeAvatar = async (req: Request, res: Response) => {
-  const {
-    user,
-    subscription: subscriptionStr,
-  }: { user: IUser; subscription: subscriptionType } = req.body;
+const changeAvatar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user }: { user: IUser } = req.body;
+  const file = req.file as Express.Multer.File;
 
-  const { email, subscription } = await userService.changeAvatar(
-    user,
-    subscriptionStr
-  );
+  const updatedUser: IUser | Error = await userService.changeAvatar(user, file);
+
+  if (isErrorOrNull(updatedUser)) {
+    next(updatedUser);
+  }
+
+  const { avatarURL } = updatedUser as IUser;
 
   res.status(200).json({
-    message: "User subscription updated",
-    data: { user: { email, subscription } },
+    message: "User avatar updated",
+    data: { avatarURL },
   });
 };
 

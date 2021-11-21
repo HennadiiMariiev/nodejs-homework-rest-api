@@ -16,3 +16,6 @@ export const AVATARS_FOLDER_PATH = path.join(
   "../../",
   "public/avatars"
 );
+
+export const MAX_AVATAR_SIZE = 4_096_000;
+export const AVATAR_PX_SIZE = 250;

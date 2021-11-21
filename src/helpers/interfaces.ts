@@ -14,9 +14,14 @@ export interface IUser {
   password: string;
   subscription: string;
   token: string;
+  avatarURL: string;
 }
 
 export interface IError {
   status: number;
   message: string;
+}
+
+export interface IAvatar {
+  avatarURL: string;
 }

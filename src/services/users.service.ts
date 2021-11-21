@@ -1,9 +1,17 @@
 import jwt from "jsonwebtoken";
 import { BadRequest } from "http-errors";
 import gravatar from "gravatar";
+import fs from "fs/promises";
+import Jimp from "jimp";
 import { User } from "../model";
 import { IUser, isDuplicateKeyError } from "../helpers";
-import { SECRET_KEY } from "../config";
+import {
+  SECRET_KEY,
+  TEMP_FOLDER_PATH,
+  AVATARS_FOLDER_PATH,
+  AVATAR_PX_SIZE,
+} from "../config";
+import { IAvatar } from "../helpers/interfaces";
 
 const signup = async (user: IUser) => {
   try {
@@ -57,17 +65,31 @@ const subscribe = async (user: IUser, subscription: string) => {
   return updatedUser;
 };
 
-//TODO: logic for avatar change
-const changeAvatar = async (user: IUser, subscription: string) => {
-  const updatedUser: IUser = await User.findByIdAndUpdate(
-    user._id,
-    {
-      subscription,
-    },
-    { new: true }
-  );
+const changeAvatar = async (user: IUser, file: Express.Multer.File) => {
+  try {
+    const { _id } = user;
+    const { path, originalname } = file;
+    const avatarName = `${_id}_${originalname}`;
 
-  return updatedUser;
+    const image = await Jimp.read(path);
+    image
+      .resize(AVATAR_PX_SIZE, AVATAR_PX_SIZE)
+      .write(`${AVATARS_FOLDER_PATH}/${avatarName}`);
+
+    const avatarObj: IAvatar = {
+      avatarURL: `/avatars/${avatarName}`,
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(_id, avatarObj, {
+      new: true,
+    });
+
+    await fs.unlink(`${TEMP_FOLDER_PATH}/${originalname}`);
+
+    return updatedUser;
+  } catch (error) {
+    return error;
+  }
 };
 
 export { signup, login, logout, current, subscribe, changeAvatar };

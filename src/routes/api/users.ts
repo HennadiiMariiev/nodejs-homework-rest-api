@@ -13,7 +13,7 @@ import {
   checkUserCredentials,
   authenticateUser,
   checkSubscription,
-  uploadMiddleware,
+  fileSizeMiddleWare,
 } from "./../../middlewares";
 
 const router = express.Router();
@@ -47,7 +47,7 @@ router.patch(
 router.patch(
   "/avatars",
   asyncWrapper([authenticateUser]),
-  uploadMiddleware.single("file"),
+  fileSizeMiddleWare,
   asyncWrapper([changeAvatar])
 );
 
