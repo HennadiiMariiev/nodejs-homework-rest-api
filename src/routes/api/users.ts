@@ -13,6 +13,7 @@ import {
   checkUserCredentials,
   authenticateUser,
   checkSubscription,
+  checkFilePresence,
 } from "./../../middlewares";
 
 const router = express.Router();
@@ -45,7 +46,7 @@ router.patch(
 
 router.patch(
   "/avatars",
-  asyncWrapper([authenticateUser]),
+  asyncWrapper([authenticateUser, checkFilePresence]),
   asyncWrapper([changeAvatar])
 );
 

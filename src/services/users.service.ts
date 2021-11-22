@@ -16,7 +16,7 @@ import { IAvatar } from "../helpers/interfaces";
 const signup = async (user: IUser) => {
   try {
     const { email, password } = user;
-    const avatarURL = gravatar.url(email);
+    const avatarURL = gravatar.url(email, { s: "250", r: "g" }, true);
 
     const newUser = new User({ email, avatarURL });
     newUser.setPassword(password);
@@ -66,11 +66,11 @@ const subscribe = async (user: IUser, subscription: string) => {
 };
 
 const changeAvatar = async (user: IUser, file: Express.Multer.File) => {
-  try {
-    const { _id } = user;
-    const { path, originalname } = file;
-    const avatarName = `${_id}_${originalname}`;
+  const { _id } = user;
+  const { path, originalname } = file;
 
+  try {
+    const avatarName = `${_id}_${originalname}`;
     const image = await Jimp.read(path);
     image
       .resize(AVATAR_PX_SIZE, AVATAR_PX_SIZE)
@@ -84,11 +84,11 @@ const changeAvatar = async (user: IUser, file: Express.Multer.File) => {
       new: true,
     });
 
-    await fs.unlink(`${TEMP_FOLDER_PATH}/${originalname}`);
-
     return updatedUser;
   } catch (error) {
     return error;
+  } finally {
+    await fs.unlink(`${TEMP_FOLDER_PATH}/${originalname}`);
   }
 };
 
