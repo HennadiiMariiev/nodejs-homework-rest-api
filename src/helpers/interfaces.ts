@@ -25,3 +25,10 @@ export interface IError {
 export interface IAvatar {
   avatarURL: string;
 }
+
+export interface IMail {
+  to: string;
+  from: string;
+  subject: string;
+  html: string;
+}
