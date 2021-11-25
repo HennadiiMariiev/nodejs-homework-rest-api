@@ -14,4 +14,14 @@ const userValidation = async (
   responseErrorOrNext(error, res, next);
 };
 
-export { userValidation };
+const userEmailValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { error } = validateObject(req.body, joiUserSchema, ["email"]);
+
+  responseErrorOrNext(error, res, next);
+};
+
+export { userValidation, userEmailValidation };

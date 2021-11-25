@@ -8,7 +8,7 @@ import {
 } from "./service.helpers";
 import { isErrorOrNull, responseWithError } from "./controller.helpers";
 import { asyncWrapper } from "./wrapper";
-import { IContact, IError, IUser, IAvatar } from "./interfaces";
+import { IContact, IError, IUser, IAvatar, IMail } from "./interfaces";
 import {
   subscriptionType,
   callbackFunction,
@@ -16,6 +16,7 @@ import {
   authType,
 } from "./types";
 import * as patterns from "./patterns";
+import { getHtmlMailContent, mailService, prepareMail } from "./sendgrid";
 
 export {
   responseErrorOrNext,
@@ -31,10 +32,14 @@ export {
   IError,
   IContact,
   IUser,
+  IMail,
   subscriptionType,
   callbackFunction,
   updateBodyStrings,
   authType,
   patterns,
   IAvatar,
+  getHtmlMailContent,
+  mailService,
+  prepareMail,
 };

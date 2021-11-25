@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { BadRequest, Unauthorized, NotFound } from "http-errors";
+import { BadRequest, Unauthorized, NotFound, Forbidden } from "http-errors";
 import jwt from "jsonwebtoken";
 import { subscriptionType, authType, IUser } from "../helpers";
 import { User } from "../model";
@@ -40,9 +40,15 @@ const checkUserCredentials = async (
     next(new NotFound(`User with email "${email}" not found`));
   }
 
-  !user?.comparePassword(password)
-    ? next(new Unauthorized(`Email or password is wrong`))
-    : next();
+  if (!user?.comparePassword(password)) {
+    next(new Unauthorized(`Email or password is wrong`));
+  }
+
+  if (!user?.verified) {
+    next(new Forbidden(`User is not verified`));
+  }
+
+  next();
 };
 
 const authenticateUser = async (

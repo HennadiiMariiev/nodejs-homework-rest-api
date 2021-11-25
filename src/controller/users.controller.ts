@@ -19,11 +19,17 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({ message: "success", data: { email } });
 };
 
-const login = async (req: Request, res: Response) => {
-  const {
-    searchedUser: { email, subscription },
-    token,
-  } = await userService.login(req.body);
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  const { searchedUser: user, token } = (await userService.login(req.body)) as {
+    searchedUser: IUser;
+    token: string;
+  };
+
+  if (isErrorOrNull(user)) {
+    return responseWithError(user, next);
+  }
+
+  const { email, subscription } = user;
 
   res.status(200).json({
     message: "success",
@@ -37,8 +43,14 @@ const logout = async (req: Request, res: Response) => {
   res.status(204).json();
 };
 
-const current = async (req: Request, res: Response) => {
-  const { email, subscription } = await userService.current(req.body.user);
+const current = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await userService.current(req.body.user);
+
+  if (isErrorOrNull(user)) {
+    return responseWithError(user, next);
+  }
+
+  const { email, subscription } = user;
 
   res.status(200).json({
     message: "success",
@@ -46,16 +58,19 @@ const current = async (req: Request, res: Response) => {
   });
 };
 
-const subscribe = async (req: Request, res: Response) => {
+const subscribe = async (req: Request, res: Response, next: NextFunction) => {
   const {
     user,
     subscription: subscriptionStr,
   }: { user: IUser; subscription: subscriptionType } = req.body;
 
-  const { email, subscription } = await userService.subscribe(
-    user,
-    subscriptionStr
-  );
+  const searchedUser = await userService.subscribe(user, subscriptionStr);
+
+  if (isErrorOrNull(searchedUser)) {
+    return responseWithError(searchedUser, next);
+  }
+
+  const { email, subscription } = searchedUser;
 
   res.status(200).json({
     message: "User subscription updated",
@@ -74,7 +89,7 @@ const changeAvatar = async (
   const updatedUser: IUser | Error = await userService.changeAvatar(user, file);
 
   if (isErrorOrNull(updatedUser)) {
-    next(updatedUser);
+    return responseWithError(updatedUser, next);
   }
 
   const { avatarURL } = updatedUser as IUser;
@@ -85,4 +100,41 @@ const changeAvatar = async (
   });
 };
 
-export { signup, login, logout, current, subscribe, changeAvatar };
+const verify = async (req: Request, res: Response, next: NextFunction) => {
+  const { verificationToken } = req.params as { verificationToken: string };
+
+  const user: IUser | Error = await userService.verify(verificationToken);
+
+  if (isErrorOrNull(user)) {
+    return responseWithError(user, next);
+  }
+
+  res.status(200).json({
+    message: "Verification successful",
+  });
+};
+
+const reVerify = async (req: Request, res: Response, next: NextFunction) => {
+  const { email }: { email: string } = req.body;
+
+  const user: IUser | Error = await userService.reVerify(email);
+
+  if (isErrorOrNull(user)) {
+    return responseWithError(user, next);
+  }
+
+  res.status(200).json({
+    message: "Verification email sent",
+  });
+};
+
+export {
+  signup,
+  login,
+  logout,
+  current,
+  subscribe,
+  changeAvatar,
+  verify,
+  reVerify,
+};

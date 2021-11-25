@@ -14,6 +14,8 @@ import {
   current,
   subscribe,
   changeAvatar,
+  verify,
+  reVerify,
 } from "./users.controller";
 
 export {
@@ -29,4 +31,6 @@ export {
   current,
   subscribe,
   changeAvatar,
+  verify,
+  reVerify,
 };
