@@ -15,6 +15,8 @@ export interface IUser {
   subscription: string;
   token: string;
   avatarURL: string;
+  verified: boolean;
+  verificationToken: string | null;
 }
 
 export interface IError {

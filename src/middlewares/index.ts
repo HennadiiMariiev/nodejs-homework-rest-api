@@ -9,7 +9,10 @@ import {
   updateStatusContactValidation,
   contactIdValidation,
 } from "./contact.validation.middleware";
-import { userValidation } from "./user.validation.middleware";
+import {
+  userValidation,
+  userEmailValidation,
+} from "./user.validation.middleware";
 import {
   uploadMiddleware,
   checkFilePresence,
@@ -21,6 +24,7 @@ export {
   updateStatusContactValidation,
   contactIdValidation,
   userValidation,
+  userEmailValidation,
   checkUserCredentials,
   authenticateUser,
   checkSubscription,

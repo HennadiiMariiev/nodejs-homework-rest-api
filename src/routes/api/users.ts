@@ -6,10 +6,13 @@ import {
   current,
   subscribe,
   changeAvatar,
+  verify,
+  reVerify,
 } from "./../../controller";
 import { asyncWrapper } from "../../helpers";
 import {
   userValidation,
+  userEmailValidation,
   checkUserCredentials,
   authenticateUser,
   checkSubscription,
@@ -48,6 +51,14 @@ router.patch(
   "/avatars",
   asyncWrapper([authenticateUser, checkFilePresence]),
   asyncWrapper([changeAvatar])
+);
+
+router.get("/verify/:verificationToken", asyncWrapper([verify]));
+
+router.post(
+  "/verify",
+  asyncWrapper([userEmailValidation]),
+  asyncWrapper([reVerify])
 );
 
 export { router };
