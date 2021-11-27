@@ -8,6 +8,7 @@ import {
   AVATARS_FOLDER_PATH,
   MAX_AVATAR_SIZE,
   AVATAR_PX_SIZE,
+  SENDGRID_API_KEY,
 } from "./config";
 
 export {
@@ -20,4 +21,5 @@ export {
   AVATARS_FOLDER_PATH,
   MAX_AVATAR_SIZE,
   AVATAR_PX_SIZE,
+  SENDGRID_API_KEY,
 };

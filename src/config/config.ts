@@ -19,3 +19,6 @@ export const AVATARS_FOLDER_PATH = path.join(
 
 export const MAX_AVATAR_SIZE = 4_096_000;
 export const AVATAR_PX_SIZE = 250;
+
+export const { SENDGRID_API_KEY } = process.env;
+export const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = process.env;

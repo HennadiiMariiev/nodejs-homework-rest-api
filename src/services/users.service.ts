@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
-import { BadRequest } from "http-errors";
+import { BadRequest, NotFound } from "http-errors";
 import gravatar from "gravatar";
 import fs from "fs/promises";
 import Jimp from "jimp";
+import { v4 } from "uuid";
 import { User } from "../model";
 import { IUser, isDuplicateKeyError } from "../helpers";
 import {
@@ -12,16 +13,20 @@ import {
   AVATAR_PX_SIZE,
 } from "../config";
 import { IAvatar } from "../helpers/interfaces";
+import { mailService } from ".";
 
 const signup = async (user: IUser) => {
   try {
     const { email, password } = user;
     const avatarURL = gravatar.url(email, { s: "250", r: "g" }, true);
+    const verificationToken = v4();
 
-    const newUser = new User({ email, avatarURL });
+    const newUser = new User({ email, avatarURL, verificationToken });
     newUser.setPassword(password);
 
     await newUser.save();
+
+    await mailService.sendActivationMail(email, verificationToken);
 
     return newUser;
   } catch (error) {
@@ -32,14 +37,19 @@ const signup = async (user: IUser) => {
 };
 
 const login = async (user: IUser) => {
-  const searchedUser: IUser = await User.findOne({ email: user.email });
-  const token = jwt.sign({ _id: searchedUser._id }, SECRET_KEY, {
-    expiresIn: "1h",
-  });
+  try {
+    const searchedUser = await User.findOne({ email: user.email });
 
-  await User.findByIdAndUpdate(searchedUser._id, { token });
+    const token = jwt.sign({ _id: searchedUser._id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
 
-  return { searchedUser, token };
+    await User.findByIdAndUpdate(searchedUser._id, { token });
+
+    return { searchedUser, token };
+  } catch (error) {
+    return error;
+  }
 };
 
 const logout = async (user: IUser) => {
@@ -92,4 +102,56 @@ const changeAvatar = async (user: IUser, file: Express.Multer.File) => {
   }
 };
 
-export { signup, login, logout, current, subscribe, changeAvatar };
+const verify = async (verificationToken: string) => {
+  try {
+    const searchedUser = await User.findOneAndUpdate(
+      { verificationToken },
+      {
+        verificationToken: null,
+        verified: true,
+      },
+      { new: true }
+    );
+
+    if (!searchedUser) {
+      return new NotFound("User not found");
+    }
+
+    return searchedUser;
+  } catch (error) {
+    return error;
+  }
+};
+
+const reVerify = async (email: string) => {
+  try {
+    const searchedUser = await User.findOne({ email });
+
+    if (!searchedUser) {
+      return new NotFound("User not found");
+    }
+
+    if (searchedUser?.verified) {
+      return new BadRequest("Verification has already been passed");
+    }
+
+    const { verificationToken } = searchedUser as IUser;
+
+    await mailService.sendActivationMail(email, verificationToken as string);
+
+    return searchedUser;
+  } catch (error) {
+    return error;
+  }
+};
+
+export {
+  signup,
+  login,
+  logout,
+  current,
+  subscribe,
+  changeAvatar,
+  verify,
+  reVerify,
+};
