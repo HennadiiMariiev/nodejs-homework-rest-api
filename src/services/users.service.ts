@@ -13,7 +13,7 @@ import {
   AVATAR_PX_SIZE,
 } from "../config";
 import { IAvatar } from "../helpers/interfaces";
-import { getHtmlMailContent, prepareMail, mailService } from "../helpers";
+import { mailService } from ".";
 
 const signup = async (user: IUser) => {
   try {
@@ -26,14 +26,7 @@ const signup = async (user: IUser) => {
 
     await newUser.save();
 
-    const html = getHtmlMailContent(verificationToken);
-    const mail = prepareMail(email, html);
-
-    const mailResponse = await mailService.send(mail);
-
-    if (mailResponse[0]?.statusCode === 202) {
-      console.log(`Message to ${email} was successfully sent!`);
-    }
+    await mailService.sendActivationMail(email, verificationToken);
 
     return newUser;
   } catch (error) {
@@ -144,14 +137,7 @@ const reVerify = async (email: string) => {
 
     const { verificationToken } = searchedUser as IUser;
 
-    const html = getHtmlMailContent(verificationToken as string);
-    const mail = prepareMail(email, html);
-
-    const mailResponse = await mailService.send(mail);
-
-    if (mailResponse[0]?.statusCode === 202) {
-      console.log(`Message to ${email} was successfully sent!`);
-    }
+    await mailService.sendActivationMail(email, verificationToken as string);
 
     return searchedUser;
   } catch (error) {

@@ -16,7 +16,6 @@ import {
   authType,
 } from "./types";
 import * as patterns from "./patterns";
-import { getHtmlMailContent, mailService, prepareMail } from "./sendgrid";
 
 export {
   responseErrorOrNext,
@@ -39,7 +38,4 @@ export {
   authType,
   patterns,
   IAvatar,
-  getHtmlMailContent,
-  mailService,
-  prepareMail,
 };
